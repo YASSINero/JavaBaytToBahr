@@ -7,11 +7,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
     private TextView basicTxtV;
-    private EditText baytEditTxt;
+    private EditText edtTxtPart;
     private Button assignVl;
 
 
@@ -20,17 +21,25 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        basicTxtV = findViewById(R.id.textView);
-        baytEditTxt = findViewById(R.id.editTextBayt);
+        basicTxtV = findViewById(R.id.txtV);
+        edtTxtPart = findViewById(R.id.edtTxtPart);
         assignVl = findViewById(R.id.setTxtBtn);
 
         assignVl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                basicTxtV.setText(baytEditTxt.getText().toString());
+                if(!(edtTxtPart.getText().length() < 15))
+                {
+                    basicTxtV.setText(ChaklProcess.processShakl(edtTxtPart.getText().toString(), true));
+                }
+                else Toast.makeText(view.getContext(), "string too short", Toast.LENGTH_SHORT).show();
+
+
+
 
             }
         });
+
 
     }
 }

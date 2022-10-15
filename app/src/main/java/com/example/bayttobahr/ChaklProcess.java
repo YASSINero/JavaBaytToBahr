@@ -112,7 +112,7 @@ public class ChaklProcess {
                             if (i == sin.length() - 1 || sin.charAt(i + 1) == ' ') // check last letter is alif
                             {
                                 sin.insert(i + 1, 'ْ');
-                                if (!isHaraka(sin.charAt(i - 1))) {
+                                if (i-2 >= 0 && !isHaraka(sin.charAt(i - 1))) {
                                     if (sin.charAt(i - 1) == 'و' && sin.charAt(i - 2) != ' ') // check waw's
                                     // surroundings
                                     {

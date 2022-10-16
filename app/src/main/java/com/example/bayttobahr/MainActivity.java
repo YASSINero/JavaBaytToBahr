@@ -1,6 +1,7 @@
 package com.example.bayttobahr;
 
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -20,6 +21,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //private List<View> arrViews = new ArrayList<>();
 
     private String _verse = "";
+    private int viewsCount = 0;
+    private boolean canReverse = false;
 
 
 
@@ -27,20 +30,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//      addContentView(findViewById(R.id.layoutLinear), mLl.getLayoutParams());
+
 
         basicTxtV = findViewById(R.id.txtV);
         edtTxtPart = findViewById(R.id.edtTxtPart);
 
         Button assignVl = findViewById(R.id.setTxtBtn);
         Button prcsCreate = findViewById(R.id.createFieldsBtn);
-//      Button addBtn = findViewById(R.id.BtnAdd);  //Object not initiated<-layout doesn't contain its reference
+
 
 
 
         assignVl.setOnClickListener(this);
         prcsCreate.setOnClickListener(this);
-//      addBtn.setOnClickListener(this);
+
 
         //Todo Fix Crash:
         // Potent causes:
@@ -50,16 +53,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-/*
-@Override
-protected void onStart()
-{
-    super.onStart();
-        mLl = findViewById(R.id.layoutLinear);
-        //Todo:
-    // -layout not defined->null reference
-}
-*/
 
     @Override
     public void onClick(View view)
@@ -76,19 +69,21 @@ protected void onStart()
                 setContentView(R.layout.linear_lo_child);
                 mLl = (LinearLayout) findViewById(R.id.layoutLinear);
                 break;
-            /*case R.id.BtnAdd:
-                dView = LayoutInflater.from(MainActivity.this).inflate(R.layout.duplct_view, mLl, false);
-                mLl.addView(dView);
-                break;*/
         }
     }
 
     public void InflateView(View view)
     {
-        LayoutInflater inflater = getLayoutInflater();
         View dView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.duplct_view, mLl, false);
-        mLl.addView(dView);
-        //Todo: crash bc mLl is null (check l:58)
+        mLl.addView(dView, 0);
+        viewsCount++;
+//      mLl.setOrientation(LinearLayout.VERTICAL);
+
+        //Todo: fix added views organization
+        //Idea: change layout direction from hor to ver
+        //  when the hor limit of views is reached
+        // and change it again after one ver addition
+        // and repeat the process until some condition is met
     }
 
 

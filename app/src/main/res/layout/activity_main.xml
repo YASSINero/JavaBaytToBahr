@@ -27,14 +27,14 @@
         android:clickable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/createFieldsBtn"
+        app:layout_constraintStart_toEndOf="@id/SwitchLayoutBtn"
         app:layout_constraintTop_toBottomOf="@+id/txtV"
         app:layout_constraintVertical_bias="0.509" />
     <Button
-        android:id="@+id/createFieldsBtn"
+        android:id="@+id/SwitchLayoutBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Start Process"
+        android:text="2nd layout"
         android:clickable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/setTxtBtn"

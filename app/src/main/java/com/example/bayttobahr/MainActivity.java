@@ -1,7 +1,10 @@
 package com.example.bayttobahr;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -10,10 +13,17 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+
+    private Executor exe = Executors.newSingleThreadExecutor();
+    private Handler handler = new Handler(Looper.getMainLooper());
 
     private TextView basicTxtV;
     private EditText edtTxtPart;
+    private LinearLayout mLl;
 
     //private ArrayList<View> arrViews = new ArrayList<>();
 
@@ -56,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.SwitchLayoutBtn:
                 setContentView(R.layout.linear_lo_child);
+                mLl = findViewById(R.id.layoutLinear);
                 break;
         }
     }
@@ -63,14 +74,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void InflateView(View view)
     {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                LinearLayout mLl = findViewById(R.id.layoutLinear);
-                LinearLayout trgtLl = (LinearLayout)LinearLayout.inflate(MainActivity.this, R.layout.duplct_view, null);
-                mLl.addView(trgtLl, 0);  //index adds view in top (affects position)
+        exe.execute(() -> {
+            ViewGroup innerV = (ViewGroup) LinearLayout.inflate(MainActivity.this, R.layout.duplct_view, null);
+
+//create required number of views for verse's length
+
+            if (innerV.getChildCount() > 2)  //Check for verse length
+            {
+                innerV.removeViews(0, 2);   //Remove n Views to satisfy condition
             }
+
+            handler.post(() -> {
+
+                mLl.addView(innerV, 0);
+
+            });
         });
+
+     //           LinearLayout trgtLl = (LinearLayout)LinearLayout.inflate(MainActivity.this, R.layout.duplct_view, null);
+                //mLl.addView(LinearLayout.inflate(MainActivity.this, R.layout.duplct_view, null), 0);  //index adds view in top (affects position)
 
         //ViewGroup dView = (ViewGroup)LayoutInflater.from(getApplicationContext()).inflate(R.layout.duplct_view, mLl, false);
         //dView.removeViews(0, dView.getChildCount()-1); //for Example
@@ -79,9 +101,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //      mLl.setOrientation(LinearLayout.VERTICAL);
 
         //Todo: figure a way to take the excessive work off the main thread
+        //     -Use Async Tasks (safe & painless multiThreading)
+        //  (Async)
+        //  => Inflate View from duplicateview, calculate how many views needed
+        //      Edit the inflated view then return it to ui Thread to addView
         //State:
         //     -AddView requires too much work from main thread
         //
+    }
+
+    public void DeleteView(View view)
+    {
+        LinearLayout child = (LinearLayout) mLl.getChildAt(0);
+        child.removeAllViews();
     }
 
 

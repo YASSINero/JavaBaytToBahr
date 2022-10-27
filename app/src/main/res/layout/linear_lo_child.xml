@@ -19,6 +19,16 @@
 
         android:text="Add"
         android:textSize="25sp" />
+    <Button
+        android:id="@+id/BtnDelete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"
+
+        android:onClick="DeleteView"
+
+        android:text="Delete"
+        android:textSize="25sp" />
 
 
 </LinearLayout>

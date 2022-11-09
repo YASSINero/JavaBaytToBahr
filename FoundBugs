@@ -1,1 +1,2 @@
 //  the word عمرو in the end of verse results in a crash
+//  the app crashes if the verse ends with ي or و 

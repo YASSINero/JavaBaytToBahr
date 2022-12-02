@@ -25,7 +25,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private EditText edtTxtPart;
     private LinearLayout mLl;
 
-    //private ArrayList<View> arrViews = new ArrayList<>();
 
     private String _verse = "";
 
@@ -60,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.setTxtBtn:
                 if (!(edtTxtPart.getText().length() < 15)) {
                     _verse = edtTxtPart.getText().toString();
-                    basicTxtV.setText(ChaklProcess.processShakl(_verse, true));
+                    basicTxtV.setText(ArudTranscription.processShakl(_verse, true));
                 } else
                     Toast.makeText(view.getContext(), "string too short", Toast.LENGTH_SHORT).show();
                 break;
@@ -77,15 +76,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         exe.execute(() -> {
             ViewGroup innerV = (ViewGroup) LinearLayout.inflate(MainActivity.this, R.layout.duplct_view, null);
 
-//create required number of views for verse's length
-
             if (innerV.getChildCount() > 2)  //Check for verse length
             {
                 innerV.removeViews(0, 2);   //Remove n Views to satisfy condition
             }
 
             handler.post(() -> {
-
                 mLl.addView(innerV, 0);
 
             });
@@ -110,10 +106,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //
     }
 
-    public void DeleteView(View view)
-    {
-        LinearLayout child = (LinearLayout) mLl.getChildAt(0);
-        child.removeAllViews();
+    public void DeleteView(View view) {
+        if(mLl.getChildCount() > 2) {
+            mLl.removeViewAt(0);
+        }
     }
 
 

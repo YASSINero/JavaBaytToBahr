@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (!(edtTxtPart.getText().length() < 15)) {
                     _verse = edtTxtPart.getText().toString();
                     basicTxtV.setText(ArudTranscription.processShakl(_verse, true));
+                    //_verse = ArudTranscription.specialWordsProcess(new StringBuilder(_verse));
                 } else
                     Toast.makeText(view.getContext(), "string too short", Toast.LENGTH_SHORT).show();
                 break;

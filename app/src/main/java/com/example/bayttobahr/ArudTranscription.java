@@ -154,7 +154,7 @@ public class ArudTranscription {
 //							}
 //
 
-                                if (sin.charAt(i - 1) != ' ' && !isTanween(sin.charAt(i + 1))
+                                if (i-1 > 0 && sin.charAt(i - 1) != ' ' && !isTanween(sin.charAt(i + 1)) //verse starting with alif bug fix
                                         && !isHaraka(sin.charAt(i - 1))) {
                                     sin.insert(i, 'َ'/*'\u064E'*/);
                                     i++;
@@ -170,10 +170,6 @@ public class ArudTranscription {
                                     sin.replace(i + 1, i + 2, "ن"/*'\u0646'*/);
                                     sin.insert(i + 2, 'ْ'/*'\u0652'*/);
                                 } // tanween materialization if not in the end
-                                else {
-                                    // then alif is followed by a harf
-                                    sin.insert(i + 1, 'ْ'/*'\u0652'*/);
-                                }
 
                             }
                             break;
@@ -182,19 +178,19 @@ public class ArudTranscription {
 
                             if (i == 0)
                                 continue; // Continue because arabic doesnt start with a saak'in
-
-                            if (sin.charAt(i + 1) == 'ى'/*'\u0649'*/) {
-                                if (!isTanween(sin.charAt(i + 2)))
+                            if (i + 2 < sin.length()) {
+                                if (sin.charAt(i + 1) == 'ى'/*'\u0649'*/ && !isTanween(sin.charAt(i + 2))) {
                                     sin.insert(i + 1, 'َ'/*'\u064E'*/);
-                            } // WTF?? maybe sin.charAt(i+1) == alif ?
+                                }
 
-                            if (i + 1 < sin.length() && !isHaraka(sin.charAt(i + 1)) && !isHaraka(sin.charAt(i - 1))
-                                    && sin.charAt(i - 1) != ' ') {
-                                sin.insert(i + 1, 'ْ'/*'\u0652'*/);
+                                if (!isHaraka(sin.charAt(i + 1)) && !isHaraka(sin.charAt(i - 1))
+                                        && sin.charAt(i - 1) != ' ') {
+                                    sin.insert(i + 1, 'ْ'/*'\u0652'*/);
 
-                                sin.insert(i, sin.charAt(i) == /*'\u0648'*/'و' ? 'ُ'/*'\u064F'*/ : 'ِ'/*'\u0650'*/);
-                                i++;
-                            } // giving haraka to preceeding harf according to cond.
+                                    sin.insert(i, sin.charAt(i) == /*'\u0648'*/'و' ? 'ُ'/*'\u064F'*/ : 'ِ'/*'\u0650'*/);
+                                    i++;
+                                } // giving haraka to preceeding harf according to cond.
+                            }
                             else if (i == sin.length() - 1) {
                                 sin.insert(i + 1, 'ْ'/*'\u0652'*/);
                                 if (!isHaraka(sin.charAt(i - 1))) {
@@ -202,8 +198,8 @@ public class ArudTranscription {
                                     i++;
                                 }
                             }
-
                             break;
+
 
                         case 'ٍ'/*'\u064D'*/:
                         case 'ٌ'/*'\u064C'*/:

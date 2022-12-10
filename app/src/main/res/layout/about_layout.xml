@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    android:theme="@style/Theme.BaytToBahr"
+    android:layoutDirection="rtl">
+
+    <TextView
+        android:id="@+id/aboutTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_marginTop="128dp"
+        android:layout_marginStart="45dp"
+
+        android:text="@string/aboutTitle"
+        android:textAlignment="center"
+        android:textColor="@color/green_kh"
+        android:textDirection="rtl"
+
+        android:textSize="35dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/paragraph"
+        style="@style/ParagraphText"
+
+        android:layout_width="320dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/aboutTitle"
+        android:layout_marginTop="11dp"
+        android:layout_marginStart="8dp"
+
+        android:text="@string/aboutParagraph"/>
+
+    <Button
+        android:id="@+id/btnGit"
+        style="@style/AboutReferencesText"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:layout_marginBottom="125dp"
+        android:background="#0fff"
+        android:drawableLeft="@drawable/ic_github_mark"
+
+        android:onClick="onClick"
+        android:text="YASSINero"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+
+    <TextView
+        android:id="@+id/linksTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/btnGit"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginVertical="16dp"
+        android:layout_marginStart="45dp"
+
+
+        android:text="@string/linksTitle"
+        android:textAlignment="center"
+        android:textColor="@color/green_kh"
+
+        android:textDirection="rtl"
+        android:textSize="35dp"
+        android:textStyle="bold"
+         />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        app:icon="?attr/homeAsUpIndicator"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+
+        android:onClick="ToMainMenu"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

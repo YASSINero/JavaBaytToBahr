@@ -1,8 +1,12 @@
 package com.example.bayttobahr;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.util.Linkify;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -11,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.concurrent.Executor;
@@ -40,14 +45,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         basicTxtV = findViewById(R.id.txtV);
         edtTxtPart = findViewById(R.id.edtTxtPart);
 
-        Button assignVl = findViewById(R.id.setTxtBtn);
-        Button prcsCreate = findViewById(R.id.SwitchLayoutBtn);
 
-
-
-
-        assignVl.setOnClickListener(this);
-        prcsCreate.setOnClickListener(this);
 
     }
 
@@ -68,10 +66,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 setContentView(R.layout.linear_lo_child);
                 mLl = findViewById(R.id.layoutLinear);
                 break;
+            case R.id.btnInfo:
+                setContentView(R.layout.about_layout);
+                break;
+            case R.id.btnGit:
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.githubLink))));
+                break;
         }
     }
 
 
+//######################linear_lo_child#############################
     public void InflateView(View view)
     {
         exe.execute(() -> {
@@ -88,15 +93,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             });
         });
 
-     //           LinearLayout trgtLl = (LinearLayout)LinearLayout.inflate(MainActivity.this, R.layout.duplct_view, null);
-                //mLl.addView(LinearLayout.inflate(MainActivity.this, R.layout.duplct_view, null), 0);  //index adds view in top (affects position)
-
-        //ViewGroup dView = (ViewGroup)LayoutInflater.from(getApplicationContext()).inflate(R.layout.duplct_view, mLl, false);
-        //dView.removeViews(0, dView.getChildCount()-1); //for Example
-
-
-//      mLl.setOrientation(LinearLayout.VERTICAL);
-
         //Todo: figure a way to take the excessive work off the main thread
         //     -Use Async Tasks (safe & painless multiThreading)
         //  (Async)
@@ -112,6 +108,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             mLl.removeViewAt(0);
         }
     }
+//##################################################################
+
+//######################about_layout#############################
+
+   public void ToMainMenu(View v) {
+       setContentView(R.layout.activity_main);
+   }
+    //funcs in about lo
+
+//###############################################################
 
 
 

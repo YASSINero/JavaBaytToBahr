@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 
+    android:theme="@style/Theme.BaytToBahr"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
@@ -8,108 +9,68 @@
     android:gravity="center">
 
 <EditText
-    android:id="@+id/toDup"
+
+    style="@style/DupEditText"
     android:layout_width="wrap_content"
-        android:minWidth="30dp"
+    android:minWidth="30dp"
     android:layout_height="wrap_content"
 
-
-    android:textDirection="rtl"
-    android:textAlignment="inherit"
-    android:textSize="25sp"
-    android:hint="ض"
-
-    android:layout_marginHorizontal="8dp"
 
     /><EditText
+
+    style="@style/DupEditText"
     android:layout_width="wrap_content"
-        android:minWidth="30dp"
+    android:minWidth="30dp"
     android:layout_height="wrap_content"
 
-
-    android:textDirection="rtl"
-    android:textAlignment="inherit"
-    android:textSize="25sp"
-    android:hint="ض"
-
-    android:layout_marginHorizontal="8dp"
 
     /><EditText
+
+    style="@style/DupEditText"
     android:layout_width="wrap_content"
-        android:minWidth="30dp"
+    android:minWidth="30dp"
     android:layout_height="wrap_content"
 
-
-    android:textDirection="rtl"
-    android:textAlignment="inherit"
-    android:textSize="25sp"
-    android:hint="ض"
-
-    android:layout_marginHorizontal="8dp"
 
     /><EditText
+
+    style="@style/DupEditText"
     android:layout_width="wrap_content"
-        android:minWidth="30dp"
+    android:minWidth="30dp"
     android:layout_height="wrap_content"
 
-
-    android:textDirection="rtl"
-    android:textAlignment="inherit"
-    android:textSize="25sp"
-    android:hint="ض"
-
-    android:layout_marginHorizontal="8dp"
 
     /><EditText
+
+    style="@style/DupEditText"
     android:layout_width="wrap_content"
-        android:minWidth="30dp"
+    android:minWidth="30dp"
     android:layout_height="wrap_content"
 
-
-    android:textDirection="rtl"
-    android:textAlignment="inherit"
-    android:textSize="25sp"
-    android:hint="ض"
-
-    android:layout_marginHorizontal="8dp"
 
     /><EditText
+
+    style="@style/DupEditText"
     android:layout_width="wrap_content"
-        android:minWidth="30dp"
+    android:minWidth="30dp"
     android:layout_height="wrap_content"
 
-
-    android:textDirection="rtl"
-    android:textAlignment="inherit"
-    android:textSize="25sp"
-    android:hint="ض"
-
-    android:layout_marginHorizontal="8dp"
 
     /><EditText
+
+    style="@style/DupEditText"
     android:layout_width="wrap_content"
-        android:minWidth="30dp"
+    android:minWidth="30dp"
     android:layout_height="wrap_content"
 
-
-    android:textDirection="rtl"
-    android:textAlignment="inherit"
-    android:textSize="25sp"
-    android:hint="ض"
-
-    android:layout_marginHorizontal="8dp"
     /><EditText
+
+    style="@style/DupEditText"
     android:layout_width="wrap_content"
         android:minWidth="30dp"
     android:layout_height="wrap_content"
 
 
-    android:textDirection="rtl"
-    android:textAlignment="inherit"
-    android:textSize="25sp"
-    android:hint="ض"
-
-    android:layout_marginHorizontal="8dp"
 
     />
 

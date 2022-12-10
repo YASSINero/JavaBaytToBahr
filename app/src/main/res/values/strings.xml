@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">BaytToBahr</string>
+    <string name="app_name_ar">أَبحِر</string>
+    <string name="aboutTitle">عن التطبيق</string>
+    <string name="linksTitle">روابط</string>
+    <string name="aboutParagraph">هذا التطبيق يساعد على نَظم الشِّعر حسب البحور المعروفة. حاليّاً لا يدعم التطبيق أيّة بحور. أعان الله مطور التطبيق على إكماله.</string>
+
+    <string name="githubLink">https://github.com/YASSINero</string>
+    <!--<string name="app_name_ar">بحر البيت</string>-->
+</resources>

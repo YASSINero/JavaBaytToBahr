@@ -1,0 +1,61 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.BaytToBahr" parent="Theme.MaterialComponents.Light.NoActionBar">
+
+        <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
+
+        <item name="android:windowBackground">@drawable/ic_bg_android_design</item>
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/green_forest</item>
+        <item name="colorPrimaryVariant">@color/green_dark</item>
+        <item name="colorOnPrimary">@color/white_shade</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/yellow_gold</item>
+        <item name="colorSecondaryVariant">@color/yellow_mustard</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <item name="android:titleTextStyle">@style/BarTextCenter</item>
+        <item name="android:textColorPrimary">?attr/colorOnPrimary</item>
+        <!-- Customize your theme here. -->
+
+        <item name="android:editTextColor">@color/black</item>
+
+    </style>
+
+    <style name="patternBackground" parent="Theme.BaytToBahr">
+        <item name="android:windowBackground">@drawable/ic_bg_android_design</item>
+    </style>
+
+    <style name="BarTextCenter">
+        <item name="titleCentered">true</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="DupEditText">
+        <item name="android:hint">"ض"</item>
+        <item name="android:textDirection">rtl</item>
+        <item name="android:textAlignment">inherit</item>
+        <item name="android:textSize">25sp</item>
+        <item name="android:layout_marginHorizontal" tools:targetApi="o">8dp</item>
+    </style>
+
+    <style name="AboutReferencesText">
+        <item name="android:textSize">19dp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:font" tools:targetApi="o">@font/ubuntu_medium</item>
+        <item name="android:textStyle">bold</item>
+        <!--Make a style for referred accounts in about layout-->
+    </style>
+
+    <style name="ParagraphText">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">19dp</item>
+        <item name="android:textDirection">rtl</item>
+        <item name="android:fontFamily">@font/amiri</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+
+</resources>

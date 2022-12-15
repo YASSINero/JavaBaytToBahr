@@ -1,21 +1,17 @@
 package com.example.bayttobahr;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.text.util.Linkify;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.concurrent.Executor;
@@ -54,10 +50,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view)
     {
         switch (view.getId()) {
-            case R.id.setTxtBtn:
+            case R.id.btnToBahr:
                 if (!(edtTxtPart.getText().length() < 15)) {
                     _verse = edtTxtPart.getText().toString();
-                    basicTxtV.setText(ArudTranscription.processShakl(_verse, true));
+                    basicTxtV.setText(
+                            ArudTranscription.specialWordsProcess(
+                            new StringBuilder(ArudTranscription.processShakl(_verse, true))
+                            ));
+                    //basicTxtV.setText(ArudTranscription.processShakl(_verse, true));
                     //_verse = ArudTranscription.specialWordsProcess(new StringBuilder(_verse));
                 } else
                     Toast.makeText(view.getContext(), "string too short", Toast.LENGTH_SHORT).show();

@@ -152,8 +152,6 @@ public class ArudTranscription {
 //								sin.insert( i, 'ْ'/*'\u0652'*/);	//=> it's waw ljam3
 //								i++;
 //							}
-//
-
                                 if (i-1 > 0 && sin.charAt(i - 1) != ' ' && !isTanween(sin.charAt(i + 1)) //verse starting with alif bug fix
                                         && !isHaraka(sin.charAt(i - 1))) {
                                     sin.insert(i, 'َ'/*'\u064E'*/);
@@ -170,8 +168,12 @@ public class ArudTranscription {
                                     sin.replace(i + 1, i + 2, "ن"/*'\u0646'*/);
                                     sin.insert(i + 2, 'ْ'/*'\u0652'*/);
                                 } // tanween materialization if not in the end
-
+                                else {
+                                    sin.insert(i + 1, 'ْ'/*'\u0652'*/);
+                                    // inserting soukoun
+                                }
                             }
+
                             break;
                         case 'ي'/*'\u064A'*/:
                         case /*'\u0648'*/'و':
@@ -185,18 +187,22 @@ public class ArudTranscription {
 
                                 if (!isHaraka(sin.charAt(i + 1)) && !isHaraka(sin.charAt(i - 1))
                                         && sin.charAt(i - 1) != ' ') {
-                                    sin.insert(i + 1, 'ْ'/*'\u0652'*/);
 
+                                    sin.insert(i + 1, 'ْ'/*'\u0652'*/);
                                     sin.insert(i, sin.charAt(i) == /*'\u0648'*/'و' ? 'ُ'/*'\u064F'*/ : 'ِ'/*'\u0650'*/);
                                     i++;
                                 } // giving haraka to preceeding harf according to cond.
+                                else if(!isHaraka(sin.charAt(i + 1)) &&
+                                        (sin.charAt(i - 1) == (sin.charAt(i) == /*'\u0648'*/'و' ? 'ُ'/*'\u064F'*/ : 'ِ'/*'\u0650'*/))) {
+                                    sin.insert(i + 1, 'ْ'/*'\u0652'*/);
+                                }
                             }
                             else if (i == sin.length() - 1) {
                                 sin.insert(i + 1, 'ْ'/*'\u0652'*/);
-                                if (!isHaraka(sin.charAt(i - 1))) {
+                                    if (!isHaraka(sin.charAt(i - 1))) {
                                     sin.insert(i, sin.charAt(i) == 'و'/*'\u0648'*/ ? 'ُ'/*'\u064F'*/ : 'ِ'/*'\u0650'*/);
                                     i++;
-                                }
+                                    }
                             }
                             break;
 
@@ -287,7 +293,7 @@ public class ArudTranscription {
             {
                 Matcher match = patt[i].matcher(tempStr);
 
-                if(match.matches()) {
+                if(match.lookingAt()) { //Todo bug string doesn't match pattern
                     //Using Groups is a must for manipulating string at correct index
                     System.out.println("Full match: " + match.group(0));
                     System.out.println("Target Match: " + match.group(2) + "\t Of position " + match.start(2));

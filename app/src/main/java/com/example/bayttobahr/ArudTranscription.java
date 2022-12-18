@@ -134,26 +134,27 @@ public class ArudTranscription {
                             if (i == sin.length() - 1 || sin.charAt(i + 1) == ' ') // check last letter is alif
                             {
                                 sin.insert(i + 1, 'ْ'/*'\u0652'*/);
-                                if (i-2 >= 0 && !isHaraka(sin.charAt(i - 1))) {
-                                    if (sin.charAt(i - 1) == 'و'/*'\u0648'*/ && sin.charAt(i - 2) != ' ') // check waw's
-                                    // surroundings
+
+                                if(i-2 >= 0 && !isHaraka(sin.charAt(i - 1))) {
+                                    if (sin.charAt(i - 1) == 'و'/*'\u0648'*/ && sin.charAt(i - 2) != ' ') // check waw's surroundings
                                     {
                                         sin.insert(i, 'ْ'/*'\u0652'*/); // => it's waw ljam3
-                                    } else {
+                                    }
+                                    else {
                                         sin.insert(i, 'َ'/*'\u064E'*/);
                                     }
                                     i++;
                                 }
-                            } else {
-//						if(i == sin.length() - 1 || sin.charAt(i+1) == ' ')	//check alif in the end
-//
-//							if(sin.charAt(i-1) == 'و'/*'\u0648'*/ && sin.charAt(i-2) != ' ')	//check waw preceding it
-//							{
-//								sin.insert( i, 'ْ'/*'\u0652'*/);	//=> it's waw ljam3
-//								i++;
-//							}
+                                if(i-1 >= 0 && !isHaraka(sin.charAt(i - 1))) {
+                                    sin.insert(i, 'َ'/*'\u064E'*/);
+                                    i++;
+                                }
+                            }
+                            else {
+
                                 if (i-1 > 0 && sin.charAt(i - 1) != ' ' && !isTanween(sin.charAt(i + 1)) //verse starting with alif bug fix
                                         && !isHaraka(sin.charAt(i - 1))) {
+                                    sin.insert(i + 1, 'ْ'/*'\u0652'*/);
                                     sin.insert(i, 'َ'/*'\u064E'*/);
                                     i++;
                                 }
@@ -168,13 +169,12 @@ public class ArudTranscription {
                                     sin.replace(i + 1, i + 2, "ن"/*'\u0646'*/);
                                     sin.insert(i + 2, 'ْ'/*'\u0652'*/);
                                 } // tanween materialization if not in the end
-                                else {
-                                    sin.insert(i + 1, 'ْ'/*'\u0652'*/);
-                                    // inserting soukoun
-                                }
                             }
-
+//                                else {
+//                                    // inserting soukoun
+//                                }
                             break;
+
                         case 'ي'/*'\u064A'*/:
                         case /*'\u0648'*/'و':
 
@@ -260,7 +260,7 @@ public class ArudTranscription {
 
 
     private static final String[] ishara = { "هَذَاْ", "هَذِهِ", "هَذَاْنِ", "هَذَيْنِ", "هَؤُلَاْءِ" };
-    private static final String[] jalala = {"اْللهُ", "اْللهِ", "اْللهَ", "اْللهُمْمَ"};	//<-if word is at start of verse won't match
+//    private static final String[] jalala = {"\\W?(\\S{0,2}?)?(ا?[َْ]?لله[َُِ]?(?:مْمَ)?)\\s"};
     private static final String[] amr = {"عَمْرُنْو", "عمرُوْ", "عمرُنْو"};
     private static final String[] oul = {"أُوْلِيْ", "أُوْلُوْ", "أُوْلَاْءِ", "أُوْلَاْتِ", "َأُوْلَاْئِك"};
 
@@ -269,14 +269,17 @@ public class ArudTranscription {
             {
                     Pattern.compile("\\W?(\\S{0,2}?)?("+ishara[0]+"|"+ishara[1]+"|"+ishara[2]+
                             "|"+ishara[3]+"|"+ishara[4]+")\\W?"),
+
                     Pattern.compile("\\W?(\\S{0,2}?)(لَكِنْ|لَكِنْنَ)\\S{0,4}?\\W?"),
                     //"\W?(\S{0,2}?)(لَكِنْ|لَكِنَّ)\S{0,4}?\W?"
-                    Pattern.compile("\\W?(\\S{0,2}?)?("+jalala[0]+"|"+jalala[1]+"|"+
-                            jalala[2]+"|"+jalala[3]+")\\W?"),
+                    Pattern.compile("\\W?(\\S{0,2}?)?(ا?[َْ]?لله[َُِ]?(?:مْمَ)?)(?:\\s|\\Z)"),  //Todo fix error of shakl index
+
                     Pattern.compile("\\W?(\\S{0,2}?)?("+amr[0]+"|"+amr[1]+"|"
                             +amr[2]+")\\W?"),
+
                     Pattern.compile("\\W?(\\S{0,2}?)?("+oul[0]+"|"+oul[1]+"|"+oul[2]+
                             "|"+oul[3]+"|"+oul[4]+")\\W?"),
+
                     Pattern.compile("\\W?(\\S{0,2}?)(أُوْلَئِك)\\S{0,4}?\\W?")
             };
 
@@ -293,7 +296,10 @@ public class ArudTranscription {
             {
                 Matcher match = patt[i].matcher(tempStr);
 
-                if(match.lookingAt()) { //Todo bug string doesn't match pattern
+                //unlike .matches(), .lookingAt() doesn't require whole string to match
+                //however, lookingAt() doesn't work if target is in the middle of string
+                //Todo => must use .find() in that case (it works for all cases)
+                if(match.find()) {
                     //Using Groups is a must for manipulating string at correct index
                     System.out.println("Full match: " + match.group(0));
                     System.out.println("Target Match: " + match.group(2) + "\t Of position " + match.start(2));
@@ -313,15 +319,14 @@ public class ArudTranscription {
                             break;
 
                         case 2:
-                            System.out.println("Case: jalala");
-                            target.insert(startPos + 3, 'ْ');
-                            target.insert(startPos + 5, 'َ');
-                            target.insert(startPos + 6, "اْ");
-                            /*
-                             *	\//Addition
-                             *		case "اْللهُ": case "اْللهِ": case "اْللهَ": case "اْللهُمْمَ":
-                             * 		break;
-                             */
+                            System.out.println("Case: jalala"); //Todo correct behaviour for no alif case
+
+                            byte insertMargin = (byte) ((isHaraka(target.charAt(startPos + 1))) ? 3 : target.charAt(startPos) == 'ا' ? 2 : 1);
+
+                            target.insert(startPos + insertMargin, 'ْ'/*'\u0652'*/);
+                            target.insert(startPos + insertMargin + 2, 'َ'/*'\u064E'*/);//5
+                            target.insert(startPos + insertMargin + 3, "اْ");//6
+
                             break;
 
                         case 3: //Todo Adapt case to group index

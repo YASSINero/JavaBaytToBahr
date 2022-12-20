@@ -1,3 +1,2 @@
-//  FIXED the app crashes if the verse ends with ي or و
-//  FIXED crash: verse starting with ا
-//
+//  Buttons in main layout behave weirdly or don't execute after transitioning between about&main layout
+//    

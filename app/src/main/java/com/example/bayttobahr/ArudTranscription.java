@@ -39,21 +39,9 @@ public class ArudTranscription {
         return harf == 'ا'/*'\u0627'*/ || harf == 'و'/*'\u0648'*/ || harf == 'ي'/*'\u064A'*/ || harf == 'ى';
     }
 
-    private static byte isHarf(char target) {
-        switch (target) {
-            case 'َ': case 'ُ': case 'ِ': case 'ْ': // haraka ignored
-                return 0;
+    private static boolean isHarf(char target) {
 
-            case 'ً': case 'ٌ': case 'ٍ': 		 // there is two syllabs(harf + haraka) + (harf + soukun))
-                return 1;
-
-            case 'ّ':							 // same as previous case
-                return 2;
-
-            default:
-                return 3;					 // isHarf
-
-        }
+        return !isHaraka(target);
 
     }
 
@@ -225,7 +213,7 @@ public class ArudTranscription {
                             break;
 
                         case 'ّ'/*'\u0651'*/:
-                            if (isWayon(sin.charAt(i + 1))) // ابّان
+                            if (i + 1 < sin.length() && isWayon(sin.charAt(i + 1))) // ابّان
                             {
                                 sin.replace(i, i + 1, "ْ"/*'\u0652'*/);
                                 sin.insert(i + 1, sin.charAt(i - 1));
@@ -236,8 +224,11 @@ public class ArudTranscription {
                                         break;
                                     case 'ا'/*'\u0627'*/:
                                     case 'ى'/*'\u0649'*/:
+                                        if(!(i+3 < sin.length() && sin.charAt(i+3) == 'ً')) {
                                         sin.insert(i + 2, 'َ'/*'\u064E'*/);
+                                        }
                                         break;
+
                                     default:
 
                                 }
@@ -272,7 +263,7 @@ public class ArudTranscription {
 
                     Pattern.compile("\\W?(\\S{0,2}?)(لَكِنْ|لَكِنْنَ)\\S{0,4}?\\W?"),
                     //"\W?(\S{0,2}?)(لَكِنْ|لَكِنَّ)\S{0,4}?\W?"
-                    Pattern.compile("\\W?(\\S{0,2}?)?(ا?[َْ]?لله[َُِ]?(?:مْمَ)?)(?:\\s|\\Z)"),  //Todo fix error of shakl index
+                    Pattern.compile("\\W?(\\S{0,2}?)?(ا?[َْ]?لله[َُِ]?(?:مْمَ)?)(?:\\s|\\Z)"),
 
                     Pattern.compile("\\W?(\\S{0,2}?)?("+amr[0]+"|"+amr[1]+"|"
                             +amr[2]+")\\W?"),
@@ -294,16 +285,18 @@ public class ArudTranscription {
 
             for (int i = 0; i < patt.length; i++)
             {
+
                 Matcher match = patt[i].matcher(tempStr);
 
                 //unlike .matches(), .lookingAt() doesn't require whole string to match
                 //however, lookingAt() doesn't work if target is in the middle of string
-                //Todo => must use .find() in that case (it works for all cases)
-                if(match.find()) {
+                //must use .find() bc it works for all cases
+                while(match.find()) {
                     //Using Groups is a must for manipulating string at correct index
-                    System.out.println("Full match: " + match.group(0));
-                    System.out.println("Target Match: " + match.group(2) + "\t Of position " + match.start(2));
-                    byte startPos = (byte) match.start(2), endPos = (byte) match.end(2);
+//                    System.out.println("Full match: " + match.group(0));
+//                    System.out.println("Target Match: " + match.group(2) + "\t Of position " + match.start(2));
+
+                    int startPos = match.start(2), endPos = match.end(2);
 
                     switch (i) {
 
@@ -311,73 +304,58 @@ public class ArudTranscription {
                         case 0: case 1:
                             System.out.println("Case: addition" );
                             target.insert(startPos + 2, "اْ");
-                            /*
-                             *	\//Addition
-                             *		case "هَذَاْ": case "هَذِهِ": case "هَذَاْنِ": case "هَذَيْنِ": case "هَؤُلَاْءِ":
-                             *		break;
-                             */
+
                             break;
 
                         case 2:
-                            System.out.println("Case: jalala"); //Todo correct behaviour for no alif case
+                            int insertMargin = ((isHaraka(target.charAt(startPos + 1))) ? 3 : target.charAt(startPos) == 'ا' ? 2 : 1);
+                            char firstHaraka = insertMargin == 1 ? 'ِ' : 'ْ';
 
-                            byte insertMargin = (byte) ((isHaraka(target.charAt(startPos + 1))) ? 3 : target.charAt(startPos) == 'ا' ? 2 : 1);
+                            System.out.println("Case: jalala");
 
-                            target.insert(startPos + insertMargin, 'ْ'/*'\u0652'*/);
-                            target.insert(startPos + insertMargin + 2, 'َ'/*'\u064E'*/);//5
-                            target.insert(startPos + insertMargin + 3, "اْ");//6
+                            target.insert(startPos + insertMargin, insertMargin == 1 ? firstHaraka + "لْ" : firstHaraka);
+                            target.insert(startPos + insertMargin + (insertMargin == 1 ? 4 : 2), 'َ'/*'\u064E'*/);//5
+                            target.insert(startPos + insertMargin + (insertMargin == 1 ? 5 : 3), "اْ");//6
 
                             break;
 
-                        case 3: //Todo Adapt case to group index
+                        case 3:
                             System.out.println("Case: amr");
                             target.delete(endPos - 2, endPos);
-                            /*
-                             * \//removal
-                             * 		case "عَمْرُنْو": case "عمرُوْ": case "عمرُنْو":
-                             * 		break;
-                             */
+
                             break;
 
                         case 4:
                             System.out.println("Case: oul");
                             target.delete(startPos + 2, startPos + 4); // removes(وْ)
-                            /*
-                             *	\//removal
-                             *	case "أُوْلِيْ": case "أُوْلُوْ": case "أُوْلَاْءِ": case "أُوْلَاْتِ": case "َأُوْلَاْئِك":
-                             *	break;
-                             */
+
                             break;
 
                         case 5:
                             System.out.println("Case: mix");
                             target.delete(startPos + 2, startPos + 4);
                             target.insert(startPos + 4, "اْ"); //after deleting 2 chars 4 is the offset
-                            /*
-                             * mixed
-                             * 		case"أُوْلَئِكَ"://tempStr == "أُوْلَئِكَ" ? 6 is offset for addition
-                             *
-                             * 		break;
-                             */
+
                             break;
 
                         default:
                             break;
-                    }
+                    }//switch
 
-                    //since the word matches, another iteration is futile
-                    break;
+                    tempStr = target.toString();
+                    match = patt[i].matcher(tempStr);
 
-                }
+                }//while
 
-            }
+
+            }//for
 
         }
 		return target.toString();
 }
 
 
-    //Process responsible of linking words that end and start with saakins
+    //Process responsible of linking words with meeting saakins
     public static String wordsLinkingProcess(String linkTrgt)
     {
         StringBuilder lnkStr = new StringBuilder(linkTrgt);
@@ -395,22 +373,8 @@ public class ArudTranscription {
 
         for (int i = 0; i < strgt.length(); i++)
         {
-            if (strgt.charAt(i) != ' ' && isHarf(strgt.charAt(i)) == 3) {
+            if (strgt.charAt(i) != ' ' && isHarf(strgt.charAt(i))) {
                 nSyllabs_verse++;
-
-                    /*//case2,1 should be removed bc this func is called only after shakl process
-                    case 2:	// shadda
-                        nSyllabs_verse++;
-                        break;
-
-                    case 1:	// tanween
-                        // check if preceding char == alif "ًا" || short-Alif "ًى"
-                        // if not: nSyllabs_verse++;
-                        // else: do nothing
-                        if(!(strgt.charAt(i-1) == 'ا' || strgt.charAt(i-1) == 'ى')) {
-                            nSyllabs_verse++;
-                        }
-                        break;*/
             }
 
         }

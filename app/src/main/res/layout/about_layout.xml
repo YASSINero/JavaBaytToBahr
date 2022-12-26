@@ -77,15 +77,4 @@
         android:textStyle="bold"
          />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        app:icon="?attr/homeAsUpIndicator"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-
-        android:onClick="ToMainMenu"/>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

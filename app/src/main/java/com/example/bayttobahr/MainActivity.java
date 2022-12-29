@@ -19,6 +19,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -80,20 +82,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
 //######################linear_lo_child#############################
-    //Todo check profiler&debug in other threads to know how exactly exe.execute() process goes
+    //Inflates N editTexts where N equals number of Syllables counted
     public void InflateView(View view)
     {
-        //calculate how many editText required after getting number of syllables
-            /*System.out.println("i: " + i);
-            System.out.println("i/8 = " + i/8);
-            System.out.println("i/8f == i/8 (" + i/8 + ", " + i/8f + ") " + String.valueOf(i/8==i/8f ? true : false));
-
-            System.out.println("i/8f = " + total);
-            System.out.println("i/8/0.125 = " + (total/0.125f - (8 * ((nSyllabs/8) - 1))));
-            System.out.println("We need " + nSyllabs/8 + " dups + " + (total-nSyllabs/8) + " of a dup");
-
-            System.out.println("So we need " + ofDup + " views in last dup ");
-            System.out.println("Therefore we need to subtract " + (8 - ofDup) + " from last dup");
+            /*
+            (nSyllabs/8): number of duplicates
+            ofDup: number of views required to be in the one Dup
+            (8 - ofDup): number of views needed to be subtracted
             */
         int nSyllabs = ArudTranscription.getNSyllabs(_verse);
         exe.execute(() -> {
@@ -101,57 +96,59 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             ViewGroup innerV = (ViewGroup) LinearLayout.inflate(MainActivity.this, R.layout.duplct_view, null);
 
             //=========================holder layout===============================
-            LinearLayout viewToAdd = new LinearLayout(this);
-            viewToAdd.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-            viewToAdd.setOrientation(LinearLayout.VERTICAL);
+            List viewToAdd = new ArrayList();
+//            viewToAdd.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+//            viewToAdd.setOrientation(LinearLayout.VERTICAL);
             //=====================================================================
 
-            // TODO complete logic
-            //  Add exception when i/8f is an int(i.e. a whole number)
-            //  and interrupt further calculations
+            //calculate how many editText required after getting number of syllables
             float total = (float)nSyllabs/8f;
 
+            //if nSyllabs isn't a multiplication of 8 then one Dup will require subtraction of editTexts
             if(nSyllabs % 8 != 0)
             {
+                //number of editTexts in the one Dup
                 int ofDup = (int)((total-nSyllabs/8)/0.125f);
+
+                //subtracting editTexts from Dup and adding it
                 innerV.removeViews(0, 8-ofDup);
+                viewToAdd.add(innerV);
 
-                viewToAdd.addView(innerV);
 
-                innerV = (ViewGroup) LinearLayout.inflate(MainActivity.this, R.layout.duplct_view, null);
-
-                for(int i = 0; i<total-1; i++)
-                {
-                    viewToAdd.addView(innerV, 0);
+                //restore original value after the subtraction
+                //Adding the rest of Dups
+                for(int i = 0; i<total-1; i++) {
+                    innerV = (ViewGroup) LinearLayout.inflate(MainActivity.this, R.layout.duplct_view, null);
+                    viewToAdd.add(innerV);
                 }
 
-                ViewGroup finalInnerV = viewToAdd;
-                handler.post(() -> mLl.addView(finalInnerV, 0));
             }
             else
             {
                 for(int i = 0; i<total; i++)
                 {
-                    viewToAdd.addView(innerV);
+                    innerV = (ViewGroup) LinearLayout.inflate(MainActivity.this, R.layout.duplct_view, null);
+                    viewToAdd.add(innerV);
                 }
-                ViewGroup finalInnerV2 = viewToAdd;
-                handler.post(() -> mLl.addView(finalInnerV2, 0));
             }
+
+            LinearLayout holderLayout = new LinearLayout(this);
+            holderLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            holderLayout.setOrientation(LinearLayout.VERTICAL);
+
+            for(int i=0; i<viewToAdd.size(); i++) {
+                holderLayout.addView((ViewGroup) viewToAdd.get(i));
+
+            }
+
+            handler.post(() -> mLl.addView(holderLayout, 0));
 
         });
 
-        //Todo: figure a way to take the excessive work off the main thread
-        //     -Create another layout and add dups to it in wThread. Inflate it in uiThread
-        //  (Async)
-        //  => Inflate View from duplicateview, calculate how many views needed
-        //      Edit the inflated view then return it to ui Thread to addView
-        //State:
-        //     -AddView requires too much work from main thread
-        //
     }
 
     public void DeleteView(View view) {
-        if(mLl.getChildCount() > 2) {
+        if(mLl.getChildCount() > 2 && !mLl.getChildAt(0).hasOnClickListeners()) {
             mLl.removeViewAt(0);
         }
     }

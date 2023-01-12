@@ -33,25 +33,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private EditText edtTxtPart;
     private LinearLayout mLl;
 
-
     private String _verse = "";
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         basicTxtV = findViewById(R.id.txtV);
         edtTxtPart = findViewById(R.id.edtTxtPart);
-
-
-
     }
-
 
     @Override
     public void onClick(View view)
@@ -60,8 +51,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btnToBahr:
                 if (!(edtTxtPart.getText().length() < 15)) {
                     _verse = edtTxtPart.getText().toString();
-                    _verse = ArudTranscription.specialWordsProcess(new StringBuilder
-                            (ArudTranscription.processShakl(_verse, true)));
+                    _verse = ArudTranscription.specialWordsProcess(new StringBuilder(
+                                ArudTranscription.processShakl(_verse, true)));
                     basicTxtV.setText(_verse);
                 } else
                     Toast.makeText(view.getContext(), "string too short", Toast.LENGTH_SHORT).show();
@@ -74,12 +65,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Intent intent = new Intent(this, AboutActivity.class);
                 startActivity(intent);
                 break;
-            case R.id.btnGit:
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.githubLink))));
-                break;
         }
     }
-
 
 //######################linear_lo_child#############################
     //Inflates N editTexts where N equals number of Syllables counted
@@ -95,11 +82,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //inflate layout with row of editTexts
             ViewGroup innerV = (ViewGroup) LinearLayout.inflate(MainActivity.this, R.layout.duplct_view, null);
 
-            //=========================holder layout===============================
+            //List to store dups
             List viewToAdd = new ArrayList();
-//            viewToAdd.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-//            viewToAdd.setOrientation(LinearLayout.VERTICAL);
-            //=====================================================================
 
             //calculate how many editText required after getting number of syllables
             float total = (float)nSyllabs/8f;
@@ -121,30 +105,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     innerV = (ViewGroup) LinearLayout.inflate(MainActivity.this, R.layout.duplct_view, null);
                     viewToAdd.add(innerV);
                 }
-
             }
             else
             {
+                //Dups don't require subtraction
+                //Adding all dups to list
                 for(int i = 0; i<total; i++)
                 {
                     innerV = (ViewGroup) LinearLayout.inflate(MainActivity.this, R.layout.duplct_view, null);
                     viewToAdd.add(innerV);
                 }
             }
-
+            //=============Holder Layout===================
             LinearLayout holderLayout = new LinearLayout(this);
-            holderLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            holderLayout.setLayoutParams(new LinearLayout
+                .LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT));
             holderLayout.setOrientation(LinearLayout.VERTICAL);
+            //=============================================
 
             for(int i=0; i<viewToAdd.size(); i++) {
-                holderLayout.addView((ViewGroup) viewToAdd.get(i));
-
+                holderLayout.addView((ViewGroup)viewToAdd.get(i));
             }
-
             handler.post(() -> mLl.addView(holderLayout, 0));
-
         });
-
     }
 
     public void DeleteView(View view) {
@@ -153,8 +137,5 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 //##################################################################
-
-
-
 
 }

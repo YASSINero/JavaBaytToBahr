@@ -51,8 +51,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btnToBahr:
                 if (!(edtTxtPart.getText().length() < 15)) {
                     _verse = edtTxtPart.getText().toString();
-                    _verse = ArudTranscription.specialWordsProcess(new StringBuilder(
-                                ArudTranscription.processShakl(_verse, true)));
+                    _verse = ArudTranscription.wordsLinkingProcess(
+                                ArudTranscription.specialWordsProcess(new StringBuilder(
+                                    ArudTranscription.processShakl(_verse, true)
+                                    )
+                                )
+                             );
                     basicTxtV.setText(_verse);
                 } else
                     Toast.makeText(view.getContext(), "string too short", Toast.LENGTH_SHORT).show();

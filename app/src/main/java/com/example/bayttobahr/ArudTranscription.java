@@ -39,6 +39,10 @@ public class ArudTranscription {
         return harf == 'ا'/*'\u0627'*/ || harf == 'و'/*'\u0648'*/ || harf == 'ي'/*'\u064A'*/ || harf == 'ى';
     }
 
+    private static boolean isSukoon(char haraka) {
+        return haraka == 'ْ'/*'\u0652'*/;
+    }
+
     private static boolean isHarf(char target) {
 
         return !isHaraka(target);
@@ -86,11 +90,6 @@ public class ArudTranscription {
                                 sin.insert(i + 1, 'ْ'/*'\u0652'*/);
                             else {
 
-//						if (sin.charAt(i-1) != '?' && isHaraka(sin.charAt(i-1)))
-//						{
-//							sin.replace(i-1, 1, 1, '?');
-//						}	// haraka correction (soukoun insertion below)
-
                                 if (sin.charAt(i - 1) != 'َ'/*'\u064E'*/ && !isHaraka(sin.charAt(i - 1))) {
                                     if (i + 1 < sin.length() && !isTanween(sin.charAt(i + 1))) {
                                         sin.insert(i, 'َ'/*'\u064E'*/);
@@ -110,22 +109,37 @@ public class ArudTranscription {
                                     sin.insert(i + 1, 'ْ'/*'\u0652'*/);
                                     // inserting soukoun
                                 }
-                                // AFTER INSERTING A wchar the wstring gets longer by 1
-                                // i.e. sin.length() => sin.length()+1
-                                // => the current i in the iteration is off by one
 
                             } // END own's letter harf process
                             break;
 
                         case 'ا'/*'\u0627'*/: // Alif
 
-                            if (i == sin.length() - 1 || sin.charAt(i + 1) == ' ') // check last letter is alif
+                            //check alif-lam
+                            int margin0 = (i!=0 && isHaraka(sin.charAt(i-1))) ? 2 : 1;
+                            if(((i==0 || sin.charAt(i-1) == ' ')
+                                    || (i == margin0 || sin.charAt(i-margin0-1) == ' '))
+                                    && sin.charAt(sin.charAt(i+1) == 'َ'/*'\u064E'*/ ? i+2 : i+1) == 'ل') {
+                                //Make a solution for:
+                                // lam shakl basically bc alif must have it
+                                // alif-lam that comes after a harf jar
+                                int margin = sin.charAt(i+1) == 'ل' ? 2 : 3;
+                                if(!isHaraka(sin.charAt(i+margin)) && sin.charAt(i+margin+1) != 'ّ'/*'\u0651'*/) {
+                                    sin.insert(i + margin, 'ْ'/*'\u0652'*/);
+                                }
+                                if(!isHaraka(sin.charAt(i+1))) {
+                                    sin.insert(i+1,'َ'/*'\u064E'*/);
+                                }
+                            }
+                            else if (i == sin.length() - 1 || sin.charAt(i + 1) == ' ') // check last letter is alif
                             {
                                 sin.insert(i + 1, 'ْ'/*'\u0652'*/);
 
                                 if(i-2 >= 0 && !isHaraka(sin.charAt(i - 1))) {
                                     if (sin.charAt(i - 1) == 'و'/*'\u0648'*/ && sin.charAt(i - 2) != ' ') // check waw's surroundings
                                     {
+                                        //Todo V Removes this alif and its sukoon
+                                        //sin.delete(i, i + 2);
                                         sin.insert(i, 'ْ'/*'\u0652'*/); // => it's waw ljam3
                                     }
                                     else {
@@ -236,6 +250,10 @@ public class ArudTranscription {
                                 sin.replace(i, i + 1, "ْ"/*'\u0652'*/);
                                 sin.insert(i + 1, sin.charAt(i - 1));
                             }
+                            break;
+
+                        case  'آ'/*'\u0622'*/:
+                            sin.replace(i,i + 1, "ءَاْ");
                             break;
 
                         default:
@@ -355,10 +373,94 @@ public class ArudTranscription {
 }
 
 
-    //Process responsible of linking words with meeting saakins
+    //Process responsible of linking words with meeting saakins & other cases
     public static String wordsLinkingProcess(String linkTrgt)
     {
         StringBuilder lnkStr = new StringBuilder(linkTrgt);
+
+        //Todo
+        //  Force user to shakl alif-lam
+        //  Remove meeting saakins
+        //  Remove the connecting hamza
+        //  Check new process
+
+        if(linkTrgt.length() != 0)
+            for(int i = 0; i< lnkStr.length(); i++) {
+                if(i==0) {
+                    int margin = isHaraka(lnkStr.charAt(i+1)) ? i+2 : i+1;
+                    String prefix = lnkStr.charAt(margin+1) == 'ِ'/*'\u0650'*/ ? "اِ" : "اُ",
+                            subPrefix = lnkStr.substring(i, i+7);
+
+                    if(subPrefix.startsWith(prefix, margin)) {
+                        lnkStr.delete(margin, margin+2);
+                    }
+                    else if(subPrefix.startsWith("اَل", margin)) {
+                        lnkStr.delete(margin, isSukoon(lnkStr.charAt(margin+3)) ? margin+2 : margin+3);
+                    }
+                }
+                else if(lnkStr.charAt(i) == ' ') {
+
+                    boolean sukoon_i = isSukoon(lnkStr.charAt(i-1));
+
+                    String harfAlifLam = lnkStr.substring(i+1, i+7);
+
+                    boolean isMoonAlifLam = harfAlifLam.startsWith("اَلْ"),
+                            isHarfMoonAlifLam = harfAlifLam.startsWith("اَلْ", isHaraka(harfAlifLam.charAt(1)) ? 2 : 1),
+                            isAlifLam = harfAlifLam.contains("اَل"),
+
+                            isConnectingHamza = harfAlifLam.startsWith("اِ") || harfAlifLam.startsWith("اُ"),
+                            isHarfCnctHamza = (harfAlifLam.contains("اِ") || harfAlifLam.contains("اُ"))
+                                    && harfAlifLam.charAt(0) != 'ا';
+
+                    //case: harf then (alif-lam/connectingHamza) in start of _verse
+
+                    //case: harf then alif-lam
+                    if(isAlifLam && harfAlifLam.charAt(0) != 'ا'/*'\u0627'*/) {
+
+                        int margin = isHaraka(harfAlifLam.charAt(1)) ? 3 : 2;
+
+                        lnkStr.delete(i+margin, !isHarfMoonAlifLam ? i+margin+3 : i+margin+2);
+                    }
+                    else if(isAlifLam && harfAlifLam.charAt(0) == 'ا'/*'\u0627'*/) {
+
+                        //case1: ma'd (wayon) is before alif-lam
+                        int margin = isHaraka(lnkStr.charAt(i-1))? 2 : 1;
+                        if(isWayon(lnkStr.charAt(i-margin))) {
+                            lnkStr.delete(i+1, !isMoonAlifLam ? i+4 : i+3);
+                            lnkStr.delete(i-margin, i);
+                            i -= margin;
+                        }
+                        //case2: haraka is before alif-lam
+                        else if(isHaraka(lnkStr.charAt(i-1)) && !isSukoon(lnkStr.charAt(i-1))) {
+                            lnkStr.delete(i+1, !isMoonAlifLam ? i+4 : i+3);
+                        }
+                        else if(isSukoon(lnkStr.charAt(i-1)) && !isWayon(lnkStr.charAt(i-2))) {
+                            lnkStr.setCharAt(i-1, 'ِ'/*'\u0650'*/);
+                            lnkStr.delete(i+1, !isMoonAlifLam ? i+4 : i+3);
+                        }
+                    }
+                    //Todo cases of connecting hamza
+                    //  hamza must have only damma/kasra as haraka
+                    //  ma'd before (space) hamza
+                    //  haraka & sukoon cases before (space) hamza
+                    //  harf then hamza
+                    else if( isConnectingHamza && isWayon(lnkStr.charAt(i - (sukoon_i ? 2 : 1))) ) {
+                        int margin = sukoon_i ? 2 : 1;
+                        lnkStr.delete(i+1, i+3);
+                        lnkStr.delete(i - margin, i);
+                        i -= margin;
+                    }
+                    else if(isConnectingHamza && (isHaraka(lnkStr.charAt(i-1)) && !isSukoon(lnkStr.charAt(i-1)))) {
+                        lnkStr.delete(i+1, i+3);
+                    }
+                    else if(isHarfCnctHamza) {
+                        int margin = isHaraka(harfAlifLam.charAt(1)) ? 3 : 2;
+                        lnkStr.delete(i+margin, i+margin+2);
+                    }
+                }
+                //Todo check new logic:
+                //  case for harf then (alif-lam/connectingHamza) in start of _verse
+            }
 
 
 
@@ -366,25 +468,16 @@ public class ArudTranscription {
     }
 
     //Last process handling syllabification
-    public static byte getNSyllabs(String sTrgt)
+    public static byte getNSyllabs(String processedVerse)
     {
-        StringBuilder strgt = new StringBuilder(sTrgt);
         byte nSyllabs_verse = 0;
 
-        for (int i = 0; i < strgt.length(); i++)
-        {
-            if (strgt.charAt(i) != ' ' && isHarf(strgt.charAt(i))) {
+        for (int i = 0; i < processedVerse.length(); i++) {
+            if (processedVerse.charAt(i) != ' ' && isHarf(processedVerse.charAt(i))) {
                 nSyllabs_verse++;
             }
-
         }
-
         return nSyllabs_verse;
     }
-
-
-
-
-
 
 }
